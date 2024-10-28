@@ -1,3 +1,4 @@
+#in questo file si crea un database
 import mysql.connector
 
 mydb = mysql.connector.connect(
