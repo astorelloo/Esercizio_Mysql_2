@@ -24,7 +24,7 @@ def getAllData():
 
 def getByRazza(razza): #nome del metodo(variabile interessata)
     query= " SELECT * FROM Mammiferi WHERE razza = %s"
-    mycursor.execute(query,(razza,))
+    mycursor.execute(query,(razza,)) #attenzione alla virgola doopo (razza,)
     rows = mycursor.fetchall()
     return rows
 
