@@ -13,7 +13,7 @@ animali = [
     ("Bella", "Golden Retriever", 30, 5),
     ("Max", " Elefante africano", 5000, 25),
     ("Mia", "Cavallo purosangue", 500, 7),
-    ("Oliver", "Koala ", 8, 4)
+    ("Oliver", "Koala", 8, 4)
 ]
 mycursor.executemany(sql, animali)
 print(mycursor.rowcount, "i record sono stati inseriti")
