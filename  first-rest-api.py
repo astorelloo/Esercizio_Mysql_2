@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 import mysql.connector
-import jason
-import pymysql
+import json
+import pymysql #nella CLI pip install pymysql
 
 #Connect to mysql
 mydb = mysql.connector.connect(
@@ -37,7 +37,7 @@ def index():
     data = getAllData()
     return jsonify({'Mammiferi': data})
 
-@approute("/<razza>")
+@app.route("/<razza>")
 def Koala(razza):
     data = getByRazza(razza)
     return jsonify({razz: data})
