@@ -73,9 +73,6 @@ def delete(id):
     else:
         return jsonify({'message': 'Errore durante l\'eliminazione o ID non trovato'}), 404
 
-#-----------------------------------------------------------------------------
-#da qua non va 
-        
 def updateMammifero(id, data):
     query = "UPDATE Mammiferi SET nome = %s, razza = %s, peso = %s, eta = %s WHERE id = %s"
     values = (data['nome'], data['razza'], data['peso'], data['eta'], id)
@@ -85,7 +82,10 @@ def updateMammifero(id, data):
 
 @app.route("/update/<id>", methods=["PUT"])
 def update(id):
+    print(request.json)
+    print("ciao")
     data = request.json
+    
     required_fields = ['nome', 'razza', 'peso', 'eta']
     if not all(field in data for field in required_fields):
         return jsonify({'message': 'Dati mancanti'}), 400
@@ -95,7 +95,7 @@ def update(id):
         return jsonify({'message': 'Mammifero aggiornato con successo'}), 200
     else:
         return jsonify({'message': 'Errore durante l aggiornamento o ID non trovato'}), 404
-
+#occhio al json da inserire!!!! se da errore guarda il file json
 
 if __name__ == "__main__":
     app.run()
