@@ -58,6 +58,20 @@ def add():
         return jsonify({'message': 'Mammifero inserito con successo'}), 201
     else:
         return jsonify({'message': 'Errore durante l inserimento'}), 500
+        
+def deleteMammifero(id):
+    query = "DELETE FROM Mammiferi WHERE id = %s"
+    mycursor.execute(query, (id,))
+    mydb.commit()
+    return mycursor.rowcount
+
+@app.route("/delete/<id>", methods=["DELETE"])
+def delete(id):
+    rows_deleted = deleteMammifero(id)
+    if rows_deleted == 1:
+        return jsonify({'message': 'Mammifero eliminato con successo'}), 200
+    else:
+        return jsonify({'message': 'Errore durante l\'eliminazione o ID non trovato'}), 404
 
 #-----------------------------------------------------------------------------
 #da qua non va 
@@ -66,12 +80,6 @@ def updateMammifero(id, data):
     query = "UPDATE Mammiferi SET nome = %s, razza = %s, peso = %s, eta = %s WHERE id = %s"
     values = (data['nome'], data['razza'], data['peso'], data['eta'], id)
     mycursor.execute(query, values)
-    mydb.commit()
-    return mycursor.rowcount
-
-def deleteMammifero(id):
-    query = "DELETE FROM Mammiferi WHERE id = %s"
-    mycursor.execute(query, (id,))
     mydb.commit()
     return mycursor.rowcount
 
@@ -88,13 +96,6 @@ def update(id):
     else:
         return jsonify({'message': 'Errore durante l aggiornamento o ID non trovato'}), 404
 
-@app.route("/delete/<id>", methods=["DELETE"])
-def delete(id):
-    rows_deleted = deleteMammifero(id)
-    if rows_deleted == 1:
-        return jsonify({'message': 'Mammifero eliminato con successo'}), 200
-    else:
-        return jsonify({'message': 'Errore durante l\'eliminazione o ID non trovato'}), 404
 
 if __name__ == "__main__":
     app.run()
