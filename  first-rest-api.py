@@ -1,8 +1,8 @@
-from flask import Flask, jsonify, request  # Added `request` import
+from flask import Flask, jsonify, request
 import mysql.connector
 import pymysql
 
-# Connect to MySQL
+# Connessione a MySQL
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -31,7 +31,7 @@ def addMammifero(data):
     values = (data['razza'], data['nome'], data['peso'], data['eta'])
     mycursor.execute(query, values)
     mydb.commit()
-    return mycursor.rowcount  # Returns the number of rows inserted (should be 1)
+    return mycursor.rowcount
 
 @app.route("/")
 def index():
@@ -39,28 +39,62 @@ def index():
     return jsonify({'Mammiferi': data})
 
 @app.route("/<razza>")
-def Koala(razza):
+def getMammiferoByRazza(razza):
     data = getByRazza(razza)
     return jsonify({razza: data})
 
-@app.route("/add", methods=["POST"])  # Added POST method here
+@app.route("/add", methods=["POST"])
 def add():
-    # Get the JSON data from the request
     data = request.json
     if not data:
-        return jsonify({'error': 'No data provided'}), 400
+        return jsonify({'message': 'Nessun dato fornito'}), 400
 
-    # Check if all required fields are present in the data
     required_fields = ['razza', 'nome', 'peso', 'eta']
     if not all(field in data for field in required_fields):
-        return jsonify({'error': 'Missing fields in data'}), 400
+        return jsonify({'message': 'Dati mancanti o errati'}), 400
 
-    # Insert the data into the database
     rows_inserted = addMammifero(data)
     if rows_inserted == 1:
-        return jsonify({'message': 'Mammifero added successfully'}), 201
+        return jsonify({'message': 'Mammifero inserito con successo'}), 201
     else:
-        return jsonify({'error': 'Failed to add Mammifero'}), 500
+        return jsonify({'message': 'Errore durante l inserimento'}), 500
+
+#-----------------------------------------------------------------------------
+#da qua non va
+        
+def updateMammifero(id, data):
+    query = "UPDATE Mammiferi SET nome = %s, razza = %s, peso = %s, eta = %s WHERE id = %s"
+    values = (data['nome'], data['razza'], data['peso'], data['eta'], id)
+    mycursor.execute(query, values)
+    mydb.commit()
+    return mycursor.rowcount
+
+def deleteMammifero(id):
+    query = "DELETE FROM Mammiferi WHERE id = %s"
+    mycursor.execute(query, (id,))
+    mydb.commit()
+    return mycursor.rowcount
+
+@app.route("/update/<id>", methods=["PUT"])
+def update(id):
+    data = request.json
+    required_fields = ['nome', 'razza', 'peso', 'eta']
+    if not all(field in data for field in required_fields):
+        return jsonify({'message': 'Dati mancanti'}), 400
+
+    rows_updated = updateMammifero(id, data)
+    if rows_updated == 1:
+        return jsonify({'message': 'Mammifero aggiornato con successo'}), 200
+    else:
+        return jsonify({'message': 'Errore durante l aggiornamento o ID non trovato'}), 404
+
+@app.route("/delete/<id>", methods=["DELETE"])
+def delete(id):
+    rows_deleted = deleteMammifero(id)
+    if rows_deleted == 1:
+        return jsonify({'message': 'Mammifero eliminato con successo'}), 200
+    else:
+        return jsonify({'message': 'Errore durante l\'eliminazione o ID non trovato'}), 404
 
 if __name__ == "__main__":
     app.run()
