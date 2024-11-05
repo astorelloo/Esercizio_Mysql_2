@@ -60,7 +60,7 @@ def add():
         return jsonify({'message': 'Errore durante l inserimento'}), 500
 
 #-----------------------------------------------------------------------------
-#da qua non va
+#da qua non va 
         
 def updateMammifero(id, data):
     query = "UPDATE Mammiferi SET nome = %s, razza = %s, peso = %s, eta = %s WHERE id = %s"
